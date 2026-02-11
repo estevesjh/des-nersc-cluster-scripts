@@ -12,8 +12,8 @@
 #SBATCH -A des_g
 #SBATCH -C gpu
 #SBATCH -G 4
-#SBATCH -q debug
-#SBATCH -t 00:10:00
+#SBATCH -q regular
+#SBATCH -t 12:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
 #SBATCH --ntasks-per-node=4
