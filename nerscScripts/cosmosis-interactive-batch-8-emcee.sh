@@ -54,5 +54,5 @@ export Y3PIPE_DIR=${MY_TOP_DIR}/y3_cluster_cpp
 export Y3_CLUSTER_CPP_DIR=${Y3PIPE_DIR}
 export Y3_CLUSTER_WORK_DIR=${Y3PIPE_DIR}/release-build
 
-cd /global/common/software/des/jesteves/chains/winter2025/y3cpp/cosmosisModels/
+cd ${PSCRATCH}/chains/winter2025/y3cpp/cosmosisModels/
 srun -n ${SLURM_NTASKS} cosmosis --mpi y1_mock_emcee.ini
