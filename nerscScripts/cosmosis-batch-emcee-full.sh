@@ -7,11 +7,11 @@
 
 #SBATCH -A des_g
 #SBATCH -C gpu
-#SBATCH -G 4
+#SBATCH -G 32
 #SBATCH -q regular
 #SBATCH -t 12:00:00
-#SBATCH --nodes=1
-#SBATCH --ntasks=4
+#SBATCH --nodes=8
+#SBATCH --ntasks=32
 #SBATCH --ntasks-per-node=4
 #SBATCH -c 32
 #SBATCH --gpus-per-task=1
