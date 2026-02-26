@@ -22,6 +22,9 @@
 
 export SLURM_CPU_BIND="cores"
 
+# Load CUDA toolkit for GPU libraries
+module load cudatoolkit/12.2
+
 export TOP_DIR=/global/common/software/des/jesteves
 export COSMOSIS_REPO_DIR=${TOP_DIR}/cosmosis
 export CSL_DIR=${TOP_DIR}/cosmosis-standard-library

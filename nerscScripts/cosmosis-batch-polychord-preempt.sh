@@ -1,25 +1,27 @@
 #!/bin/bash
 
-# PolyChord sampler batch script - nested sampling
-# PolyChord automatically determines convergence based on evidence tolerance
+# PolyChord sampler batch script - preemptible version
+# Uses gpu_preempt QOS for faster scheduling
+# Job may be preempted but will resume from checkpoint
 #
 # N.B.: Our code expects that each MPI rank can see all the GPUs on each node.
 # Make sure to keep 'ntasks' = 4 * 'nodes', because always want 4 ranks per node.
 
 #SBATCH -A des_g
 #SBATCH -C gpu
-#SBATCH -G 32
-#SBATCH -q regular
-#SBATCH -t 24:00:00
-#SBATCH --nodes=8
-#SBATCH --ntasks=32
+#SBATCH -q preempt
+#SBATCH -t 2-00:00:00
+#SBATCH --nodes=4
+#SBATCH --ntasks=16
 #SBATCH --ntasks-per-node=4
 #SBATCH -c 32
 #SBATCH --gpus-per-task=1
 #SBATCH --gpu-bind=none
+#SBATCH -L scratch:1
 #SBATCH --mail-type=begin,end,fail
 #SBATCH --mail-user=jesteves@fas.harvard.edu
-#SBATCH -J polychord_full
+#SBATCH -J polychord_preempt
+#SBATCH -o %x-%j.out
 
 export SLURM_CPU_BIND="cores"
 

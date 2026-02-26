@@ -1,30 +1,37 @@
 #!/bin/bash
 
-# PolyChord sampler batch script - nested sampling
-# PolyChord automatically determines convergence based on evidence tolerance
+# Zeus sampler batch script - preemptible version
+# Uses gpu_preempt QOS for faster scheduling
+# Job may be preempted but will resume from checkpoint
 #
 # N.B.: Our code expects that each MPI rank can see all the GPUs on each node.
+# The code handles making sure that each MPI rank talks only to a single GPU.
+# We must use the --gpus-per-task=1 and --gpu-bind=none flags for SLURM because
+# of this.
+#
 # Make sure to keep 'ntasks' = 4 * 'nodes', because always want 4 ranks per node.
 
 #SBATCH -A des_g
 #SBATCH -C gpu
-#SBATCH -G 32
-#SBATCH -q regular
-#SBATCH -t 24:00:00
-#SBATCH --nodes=8
-#SBATCH --ntasks=32
+#SBATCH -q preempt
+#SBATCH -t 2-00:00:00
+#SBATCH --nodes=4
+#SBATCH --ntasks=16
 #SBATCH --ntasks-per-node=4
 #SBATCH -c 32
 #SBATCH --gpus-per-task=1
 #SBATCH --gpu-bind=none
 #SBATCH --mail-type=begin,end,fail
 #SBATCH --mail-user=jesteves@fas.harvard.edu
-#SBATCH -J polychord_full
+#SBATCH -J zeus_preempt
+#SBATCH -o %x-%j.out
 
 export SLURM_CPU_BIND="cores"
 
 # Load CUDA toolkit for GPU libraries
 module load cudatoolkit/12.2
+
+# working directory, use high performance shared area on perlmutter
 
 export TOP_DIR=/global/common/software/des/jesteves
 export COSMOSIS_REPO_DIR=${TOP_DIR}/cosmosis
@@ -40,18 +47,18 @@ export CUBA_DIR=${INTEGRATION_TOOLS_DIR}/cuba
 export CUBA_CPP_DIR=$INTEGRATION_TOOLS_DIR/cubacpp
 export GPU_INT_DIR=${INTEGRATION_TOOLS_DIR}/gpuintegration
 
+# We set OMP_NUM_THREADS to avoid oversubscribing the CPU cores.
+# This value has not been carefully tuned.
 export OMP_NUM_THREADS=4
 
-# Set up CosmoSIS
+# Now set up CosmoSIS
 source ${COSMOSIS_REPO_DIR}/setup-cosmosis-nersc /global/common/software/des/common/Conda_Envs/y3cl_je
 
+# And let's work in our own individual y3_cluster_cpp directory
 export MY_TOP_DIR=/global/common/software/des/$(id -un)
 export Y3PIPE_DIR=${MY_TOP_DIR}/y3_cluster_cpp
 export Y3_CLUSTER_CPP_DIR=${Y3PIPE_DIR}
 export Y3_CLUSTER_WORK_DIR=${Y3PIPE_DIR}/release-build
 
-# Create output directory for PolyChord native files
-mkdir -p ${PSCRATCH}/chains/winter2025/y3cpp/chains/polychord_output/clusters
-
 cd ${PSCRATCH}/chains/winter2025/y3cpp/cosmosisModels/
-srun -n ${SLURM_NTASKS} cosmosis --mpi y1_mock_polychord.ini
+srun -n ${SLURM_NTASKS} cosmosis --mpi y1_mock_zeus.ini

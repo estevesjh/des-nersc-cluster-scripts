@@ -16,7 +16,7 @@
 #SBATCH -C gpu
 #SBATCH -G 32
 #SBATCH -q regular
-#SBATCH -t 12:00:00
+#SBATCH -t 24:00:00
 #SBATCH --nodes=8
 #SBATCH --ntasks=32
 #SBATCH --ntasks-per-node=4
@@ -28,6 +28,9 @@
 #SBATCH -J zeus_full
 
 export SLURM_CPU_BIND="cores"
+
+# Load CUDA toolkit for GPU libraries
+module load cudatoolkit/12.2
 
 # working directory, use high performance shared area on perlmutter
 

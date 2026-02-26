@@ -1,25 +1,22 @@
 #!/bin/bash
 
-# PolyChord sampler batch script - nested sampling
-# PolyChord automatically determines convergence based on evidence tolerance
-#
-# N.B.: Our code expects that each MPI rank can see all the GPUs on each node.
-# Make sure to keep 'ntasks' = 4 * 'nodes', because always want 4 ranks per node.
+# Zeus sampler - DEBUG TEST (1 node, 30 min)
+# Use this to verify the pipeline runs before submitting full job
 
 #SBATCH -A des_g
 #SBATCH -C gpu
-#SBATCH -G 32
-#SBATCH -q regular
-#SBATCH -t 24:00:00
-#SBATCH --nodes=8
-#SBATCH --ntasks=32
+#SBATCH -G 4
+#SBATCH -q debug
+#SBATCH -t 00:30:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
 #SBATCH --ntasks-per-node=4
 #SBATCH -c 32
 #SBATCH --gpus-per-task=1
 #SBATCH --gpu-bind=none
 #SBATCH --mail-type=begin,end,fail
 #SBATCH --mail-user=jesteves@fas.harvard.edu
-#SBATCH -J polychord_full
+#SBATCH -J zeus_debug
 
 export SLURM_CPU_BIND="cores"
 
@@ -50,8 +47,5 @@ export Y3PIPE_DIR=${MY_TOP_DIR}/y3_cluster_cpp
 export Y3_CLUSTER_CPP_DIR=${Y3PIPE_DIR}
 export Y3_CLUSTER_WORK_DIR=${Y3PIPE_DIR}/release-build
 
-# Create output directory for PolyChord native files
-mkdir -p ${PSCRATCH}/chains/winter2025/y3cpp/chains/polychord_output/clusters
-
 cd ${PSCRATCH}/chains/winter2025/y3cpp/cosmosisModels/
-srun -n ${SLURM_NTASKS} cosmosis --mpi y1_mock_polychord.ini
+srun -n ${SLURM_NTASKS} cosmosis --mpi y1_mock_zeus.ini
