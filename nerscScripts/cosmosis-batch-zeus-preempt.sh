@@ -28,9 +28,6 @@
 
 export SLURM_CPU_BIND="cores"
 
-# Load CUDA toolkit for GPU libraries
-module load cudatoolkit/12.2
-
 # working directory, use high performance shared area on perlmutter
 
 export TOP_DIR=/global/common/software/des/jesteves
@@ -53,6 +50,9 @@ export OMP_NUM_THREADS=4
 
 # Now set up CosmoSIS
 source ${COSMOSIS_REPO_DIR}/setup-cosmosis-nersc /global/common/software/des/common/Conda_Envs/y3cl_je
+
+# Load CUDA toolkit for GPU libraries
+module load cudatoolkit/12.2
 
 # And let's work in our own individual y3_cluster_cpp directory
 export MY_TOP_DIR=/global/common/software/des/$(id -un)
